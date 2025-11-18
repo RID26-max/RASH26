@@ -1,0 +1,176 @@
+[index.html](https://github.com/user-attachments/files/23614259/index.html)
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FIFA 26 RUSH — Новости и Комментарии</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #001f3f, #003366, #0055aa);
+            color: #fff;
+            margin: 0;
+            padding: 0;
+            background-attachment: fixed;
+        }
+        header {
+            background: rgba(0,0,0,0.7);
+            padding: 25px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: bold;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 20px auto;
+        }
+        .news-input, .comment-input {
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(5px);
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 12px 25px;
+            border: none;
+            background: #f5c400;
+            color: #000;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 15px;
+        }
+        button:hover {
+            background: #ffe680;
+        }
+        .news-item {
+            background: rgba(0,0,0,0.55);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+        }
+        .date {
+            font-size: 12px;
+            opacity: 0.7;
+        }
+        .tg-link {
+            text-align:center;
+            margin-top:10px;
+        }
+        .tg-link a {
+            color:#3ea6ff;
+            font-size:18px;
+            text-decoration:none;
+        }
+        .preview-img {
+            max-width: 100%;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <header>FIFA 26 — RUSH Новости и Комментарии</header>
+
+    <div class="tg-link">
+        <a id="tgLink" href="https://t.me/c/2168719050/10" target="_blank">Наш Telegram канал</a>
+        <div style="margin-top:8px;">
+            <button onclick="openTelegram()" style="padding:8px 12px; border-radius:8px; font-weight:bold;">Открыть в Telegram</button>
+            <button onclick="copyTG()" style="padding:8px 12px; border-radius:8px; margin-left:8px;">Скопировать ссылку</button>
+        </div>
+        <div id="tgNote" style="font-size:13px; opacity:0.9; margin-top:6px;">Если браузер не открывает канал — нажмите "Скопировать ссылку" и вставьте её в Telegram.</div>
+    </div>
+
+    <div class="container">
+        <div class="news-input">
+            <h3>Добавить новость</h3>
+            <input id="newsTitle" placeholder="Заголовок" />
+            <textarea id="newsText" placeholder="Текст новости"></textarea>
+            <input type="file" id="imageInput" accept="image/*" />
+            <img id="preview" class="preview-img" style="display:none;" />
+            <button onclick="addNews()">Опубликовать</button>
+        </div>
+
+        <h2>Новости</h2>
+        <div id="newsList"></div>
+    </div>
+
+    <script>
+        let uploadedImage = "";
+
+        function openTelegram(){
+            window.open("https://t.me/c/2168719050/10", "_blank");
+        }
+
+        function copyTG(){
+            navigator.clipboard.writeText("https://t.me/c/2168719050/10");
+            alert("Ссылка скопирована!");
+        }
+
+        document.getElementById("imageInput").addEventListener("change", function(){
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e){
+                uploadedImage = e.target.result;
+                const prev = document.getElementById("preview");
+                prev.src = uploadedImage;
+                prev.style.display = "block";
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function addNews() {
+            const title = document.getElementById('newsTitle').value;
+            const text = document.getElementById('newsText').value;
+            if (!title || !text) return alert("Заполни все поля!");
+
+            let imgHTML = uploadedImage ? `<img class='preview-img' src='${uploadedImage}'>` : "";
+
+            const newsBlock = document.createElement('div');
+            newsBlock.className = 'news-item';
+            newsBlock.innerHTML = `
+                <h3>${title}</h3>
+                <p>${text}</p>
+                ${imgHTML}
+                <p class="date">${new Date().toLocaleString()}</p>
+                <div class="comment-input">
+                    <textarea placeholder="Ваш комментарий"></textarea>
+                    <button onclick="addComment(this)">Комментировать</button>
+                </div>
+                <div class="comments"></div>
+            `;
+
+            document.getElementById('newsList').prepend(newsBlock);
+            document.getElementById('newsTitle').value = '';
+            document.getElementById('newsText').value = '';
+            document.getElementById('preview').style.display = "none";
+            uploadedImage = "";
+        }
+
+        function addComment(btn) {
+            const textarea = btn.previousElementSibling;
+            const text = textarea.value;
+            if (!text) return alert("Напиши комментарий!");
+
+            const comment = document.createElement('div');
+            comment.className = 'comment';
+            comment.innerHTML = `<p>${text}</p><p class="date">${new Date().toLocaleString()}</p>`;
+
+            btn.parentElement.nextElementSibling.append(comment);
+            textarea.value = '';
+        }
+    </script>
+</body>
+</html>
